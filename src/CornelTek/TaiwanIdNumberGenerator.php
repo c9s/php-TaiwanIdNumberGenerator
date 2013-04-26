@@ -1,5 +1,6 @@
 <?php
 namespace CornelTek;
+use Exception;
 
 class TaiwanIdNumberGenerator
 {
@@ -73,6 +74,13 @@ class TaiwanIdNumberGenerator
         if ( ! $cityName ) {
             $cityName = array_rand($this->cities,1);
         }
+        $cityName = str_replace('台','臺',$cityName);
+
+
+        if ( ! isset($this->cities[ $cityName ]) ) {
+            throw new Exception("The City name $cityName does not exist in the city table.");
+        }
+
         $cityCode = $this->cities[ $cityName ];
 
         if ( $sex ) {
