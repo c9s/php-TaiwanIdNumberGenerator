@@ -69,30 +69,31 @@ class TaiwanIdNumberGenerator
         return (10 - ($ret % 10)) % 10;
     }
 
-    public function generate($cityCode = null, $sex = null, $serial = null) {
-
-        if ( ! $cityCode ) {
+    public function generate($cityName = null, $sex = null, $serial = null) {
+        if ( ! $cityName ) {
             $cityName = array_rand($this->cities,1);
-            $cityCode = $this->cities[ $cityName ];
         }
+        $cityCode = $this->cities[ $cityName ];
 
-        if ( ! $sex ) {
-            $sex = mt_rand(1,2);
+        if ( $sex ) {
+            $sexCode = $self->sex[ $sex ];
+        } else {
+            $sexCode = mt_rand(1,2);
         }
 
         if ( ! $serial ) {
             $serial = $this->newRandomSerialNumber();
         }
 
-        $sum = $this->calculateChecksum($cityCode, $sex, $serial);
-        return substr($cityCode,2,1) . strval($sex) . strval($serial) . strval($sum);
+        $sum = $this->calculateChecksum($cityCode, $sexCode, $serial);
+        return substr($cityCode,2,1) . strval($sexCode) . strval($serial) . strval($sum);
     }
 
-    public function generateUnique($cityCode = null, $sex = null, $serial = null) {
-        $idNumber = $this->generate($cityCode, $sex, $serial);
+    public function generateUnique($cityName = null, $sex = null, $serial = null) {
+        $idNumber = $this->generate($cityName, $sex, $serial);
         if ( isset($this->_generated[ $idNumber ]) ) {
             // generate new
-            return $this->generateUnique($cityCode, $sex);
+            return $this->generateUnique($cityName, $sex);
         }
         $this->_generated[ $idNumber ] = true;
         return $idNumber;
