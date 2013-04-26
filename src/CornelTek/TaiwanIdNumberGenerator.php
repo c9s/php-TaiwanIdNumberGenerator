@@ -44,6 +44,20 @@ class TaiwanIdNumberGenerator
         return substr(strval(mt_rand()), 0, 7);
     }
 
+    public function getCityCode($cityName) {
+        $cityName = str_replace('台','臺',$cityName);
+        if ( isset($this->cities[ $cityName ] ) ) {
+            return $this->cities[ $cityName ];
+        }
+    }
+
+    public function getSexCode($sex) {
+        if ( isset($this->sex[ $sex ]) ) {
+            return $this->sex[ $sex ];
+        }
+    }
+
+
     public function calculateSerialChecksum($serial)
     {
         $sum = 0;
@@ -76,7 +90,6 @@ class TaiwanIdNumberGenerator
         }
         $cityName = str_replace('台','臺',$cityName);
 
-
         if ( ! isset($this->cities[ $cityName ]) ) {
             throw new Exception("The City name $cityName does not exist in the city table.");
         }
@@ -84,7 +97,7 @@ class TaiwanIdNumberGenerator
         $cityCode = $this->cities[ $cityName ];
 
         if ( $sex ) {
-            $sexCode = $self->sex[ $sex ];
+            $sexCode = $this->sex[ $sex ];
         } else {
             $sexCode = mt_rand(1,2);
         }
